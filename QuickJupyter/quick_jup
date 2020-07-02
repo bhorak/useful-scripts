@@ -1,0 +1,14 @@
+#!/bin/zsh
+FILE_NAME=${1?Error: no name given}
+FILE_PATH=$(find -type f -name $FILE_NAME)
+SCRIPT_PATH="$(dirname $(readlink -f $0))"
+echo Path of Script is $SCRIPT_PATH
+echo Path of Data File is $FILE_PATH
+sed "s|__path__|$FILE_PATH|g" $SCRIPT_PATH/notebook_template.py > $SCRIPT_PATH/notebook_code.py
+jupytext --to notebook $SCRIPT_PATH/notebook_code.py
+rm $SCRIPT_PATH/notebook_code.py
+mv $SCRIPT_PATH/notebook_code.ipynb $PWD
+mv $PWD/notebook_code.ipynb $PWD/"${${FILE_NAME}%%.*}_eda.ipynb"
+jupyter notebook $PWD/"${${FILE_NAME}%%.*}_eda.ipynb"
+
+
